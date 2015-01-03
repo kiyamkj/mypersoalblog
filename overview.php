@@ -1,13 +1,33 @@
 <?php
 $page = 1;
+$category = null;
+$year = null;
 
 if(filter_has_var(INPUT_GET, 'page')){
     $page = (int) filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
 }
 
+if(filter_has_var(INPUT_GET, 'category')){
+    $category = (int) filter_input(INPUT_GET, 'category', FILTER_SANITIZE_NUMBER_INT);
+}
+
+if(filter_has_var(INPUT_GET, 'year')){
+    $year = (int) filter_input(INPUT_GET, 'year', FILTER_SANITIZE_NUMBER_INT);
+}
+
+$where = "WHERE 1 = 1";
+
+if($category != null){
+    $where .= " AND p.Category_ID = " .$category;
+}
+
+if($year != null){
+    $where .= " AND YEAR(p.date) = " .$year;
+}
+
 $per_page = 2;
 
-$query_total_entries = "SELECT COUNT(*) AS count FROM `tbl_post`";
+$query_total_entries = "SELECT COUNT(p.ID) AS count FROM `tbl_post` AS p " .$where;
 $result_total_entries = $db->query($query_total_entries);
 
 $total_entries = (int) $result_total_entries->fetch_assoc()['count'];
@@ -24,7 +44,7 @@ $start = max($page - 1, 0) * $per_page;
 $query = "SELECT p.*, u.name, u.email, 
             (SELECT COUNT(*) FROM tbl_comment as c WHERE c.POST_ID = p.ID) AS comment_count 
           FROM `tbl_post` AS p
-          LEFT JOIN tbl_user AS u ON (p.USER_ID = u.ID)
+          LEFT JOIN tbl_user AS u ON (p.USER_ID = u.ID) " .$where ."
           ORDER BY p.date DESC
           LIMIT ?, ?";
 

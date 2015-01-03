@@ -150,7 +150,7 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
 
                                     while($row = $result_category->fetch_assoc()){
                                     ?>  
-                                        <li><a href="#"><?php echo $row['Name'];?></a></li>
+                                        <li><a href="index.php?action=overview&amp;category=<?php echo $row['ID'];?>"><?php echo $row['Name'];?></a></li>
                                     <?php
                                     }
                                     ?>
@@ -164,7 +164,7 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
 
                                     while($row_years = $result_post_years->fetch_assoc()){
                                     ?>
-                                        <li><a href="#">Year <?php echo $row_years['year']; ?></a></li>
+                                        <li><a href="index.php?action=overview&amp;year=<?php echo $row_years['year'];?>">Year <?php echo $row_years['year']; ?></a></li>
                                     <?php
                                     }
                                     ?>
